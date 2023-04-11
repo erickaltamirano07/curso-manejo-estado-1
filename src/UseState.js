@@ -10,6 +10,8 @@ function UseState({ name }) {
         value: '',
         error: false,
         loading: false,
+        deleted: false,
+        confirmed: false,
     });
     
     console.log(state);
@@ -26,6 +28,7 @@ function UseState({ name }) {
                         ...state,
                         error: false,
                         loading: false,
+                        confirmed:true,
                     });
                     
                 } else {
@@ -46,7 +49,10 @@ function UseState({ name }) {
         console.log("Terminado el Efecto");        
     },[state.loading]);
 
-    return (
+    
+
+    if (!state.deleted && !state.confirmed) {
+        return (
         <div>
             <h2>Eliminar {name}</h2>
             <p>Por favor escribe el codigo de seguridad</p>
@@ -80,6 +86,52 @@ function UseState({ name }) {
             >Comprobar</button>
         </div>
     );
+    } else if (!!state.confirmed && !state.deleted) {
+        return (
+            <React.Fragment>
+                <p>Pedimos confirmacion. Estas Seguro?</p>
+                <button
+                    onClick={() => {
+                        setState({
+                            ...state,
+                            deleted: true,
+                        });
+                    }}                    
+                >
+                    Si, Eliminar
+                </button>
+                <button
+                    onClick={() => {
+                        setState({
+                            ...state,
+                            confirmed: false,
+                            value: '',
+                        });
+                    }}                    
+                >
+                    No. Me arrepiento
+                </button>
+            </React.Fragment>
+        );
+    } else {
+        return (
+            <React.Fragment>
+                <p>Eliminado con exito</p>
+                <button
+                    onClick={() => {
+                        setState({
+                            ...state,
+                            confirmed: false,
+                            deleted: false,
+                            value: '',
+                        });
+                    }}
+                >
+                    Recuperar UseState
+                </button>
+            </React.Fragment>                        
+        );        
+    }
 }
 
 export {UseState};
