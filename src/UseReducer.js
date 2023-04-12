@@ -5,6 +5,31 @@ const SECURITY_CODE = "paradigma";
 function UseReducer({ name }) {
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
+  const onConfirm = () => dispatch({ type: actionTypes.confirm });
+  const onError = () => dispatch({ type: actionTypes.error });
+  const onCheck = () => dispatch({ type: actionTypes.check });
+  const onDelete = () => dispatch({ type: actionTypes.delete });
+  const onReset = () => dispatch({ type: actionTypes.reset });
+
+  const onWrite = ({ target: { value } }) => {
+    dispatch({ type: actionTypes.write, payload: value });
+  };
+
+  //Primera manera
+
+  /*const onWrite = (newValue) => {
+       // dispatch({type: actionTypes.write, payload: newValue });      
+  };*/
+
+  //Otras maneras
+
+  /* const onWrite = (event) => {
+      dispatch({type: actionTypes.write, payload: event.target.value });
+    };*/
+  /* const onWrite = ({ target}) => {
+       dispatch({ type: actionTypes.write, payload: target.value });
+     };*/
+
   React.useEffect(() => {
     console.log("Empenzando el efecto");
     if (!!state.loading) {
@@ -12,9 +37,9 @@ function UseReducer({ name }) {
         console.log("Haciendo la validacion");
 
         if (state.value === SECURITY_CODE) {
-          dispatch({ type: actionTypes.confirm });
+          onConfirm();
         } else {
-          dispatch({ type: actionTypes.error });
+          onError();
         }
 
         console.log("Terminado la validacion");
@@ -35,51 +60,30 @@ function UseReducer({ name }) {
 
         <input
           value={state.value}
-          onChange={(event) => {
-            dispatch({ type: actionTypes.write, payload: event.target.value });
-          }}
           placeholder="Codigo de seguridad"
+          //Primera manera
+          /*onChange={(event) => {
+                    onWrite(event.target.value);}}*/
+
+          //Otras Maneras
+          onChange={onWrite}
         />
-        <button
-          onClick={() => {
-            dispatch({ type: actionTypes.check });
-          }}
-        >
-          Comprobar
-        </button>
+        <button onClick={onCheck}>Comprobar</button>
       </div>
     );
   } else if (!!state.confirmed && !state.deleted) {
     return (
       <React.Fragment>
         <p>Pedimos confirmacion. Estas Seguro?</p>
-        <button
-          onClick={() => {
-            dispatch({ type: actionTypes.delete });
-          }}
-        >
-          Si, Eliminar
-        </button>
-        <button
-          onClick={() => {
-            dispatch({ type: actionTypes.reset });
-          }}
-        >
-          No. Me arrepiento
-        </button>
+        <button onClick={onDelete}>Si, Eliminar</button>
+        <button onClick={onReset}>No. Me arrepiento</button>
       </React.Fragment>
     );
   } else {
     return (
       <React.Fragment>
         <p>Eliminado con exito</p>
-        <button
-          onClick={() => {
-            dispatch({ type: actionTypes.reset });
-          }}
-        >
-          Recuperar UseState
-        </button>
+        <button onClick={onReset}>Recuperar UseState</button>
       </React.Fragment>
     );
   }
