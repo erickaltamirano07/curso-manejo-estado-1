@@ -12,9 +12,9 @@ function UseReducer({ name }) {
         console.log("Haciendo la validacion");
 
         if (state.value === SECURITY_CODE) {
-          dispatch({ type: "CONFIRM" });
+          dispatch({ type: actionTypes.confirm });
         } else {
-          dispatch({ type: "ERROR" });
+          dispatch({ type: actionTypes.error });
         }
 
         console.log("Terminado la validacion");
@@ -36,13 +36,13 @@ function UseReducer({ name }) {
         <input
           value={state.value}
           onChange={(event) => {
-            dispatch({ type: "WRITE", payload: event.target.value });
+            dispatch({ type: actionTypes.write, payload: event.target.value });
           }}
           placeholder="Codigo de seguridad"
         />
         <button
           onClick={() => {
-            dispatch({ type: "CHECK" });
+            dispatch({ type: actionTypes.check });
           }}
         >
           Comprobar
@@ -55,14 +55,14 @@ function UseReducer({ name }) {
         <p>Pedimos confirmacion. Estas Seguro?</p>
         <button
           onClick={() => {
-            dispatch({ type: "DELETE" });
+            dispatch({ type: actionTypes.delete });
           }}
         >
           Si, Eliminar
         </button>
         <button
           onClick={() => {
-            dispatch({ type: "RESET" });
+            dispatch({ type: actionTypes.reset });
           }}
         >
           No. Me arrepiento
@@ -75,7 +75,7 @@ function UseReducer({ name }) {
         <p>Eliminado con exito</p>
         <button
           onClick={() => {
-            dispatch({ type: "RESET" });
+            dispatch({ type: actionTypes.reset });
           }}
         >
           Recuperar UseState
@@ -93,33 +93,42 @@ const initialState = {
   confirmed: false,
 };
 
+const actionTypes = {
+  confirm: "CONFIRM",
+  error: "ERROR",
+  check: "CHECK",
+  delete: "DELETE",
+  reset: "RESET",
+  write: "WRITE",
+};
+
 const reducerObject = (state, payload) => ({
-  CONFIRM: {
+  [actionTypes.confirm]: {
     ...state,
     error: false,
     loading: false,
     confirmed: true,
   },
-  ERROR: {
+  [actionTypes.error]: {
     ...state,
     error: true,
     loading: false,
   },
-  CHECK: {
+  [actionTypes.check]: {
     ...state,
     loading: true,
   },
-  DELETE: {
+  [actionTypes.delete]: {
     ...state,
     deleted: true,
   },
-  RESET: {
+  [actionTypes.reset]: {
     ...state,
     confirmed: false,
     deleted: false,
     value: "",
   },
-  WRITE: {
+  [actionTypes.write]: {
     ...state,
     value: payload,
   },
